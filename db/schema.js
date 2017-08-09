@@ -5,11 +5,10 @@ const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
 
-const GameSchema = new Schema({
-    user: String,
-    points: Number,
-    board: [],
-    categories: [CategorySchema]
+const QuestionSchema = new Schema({
+   value: Number,
+   question: String,
+   answer: String
 });
 
 const CategorySchema = new Schema({
@@ -17,11 +16,25 @@ const CategorySchema = new Schema({
     questions: [QuestionSchema]
 });
 
-const QuestionSchema = new Schema({
-   value: Number,
-   question: String,
-   answer: String
+const GameSchema = new Schema({
+    user: String,
+    points: Number,
+    board: [Boolean],
+    categories: [CategorySchema]
 });
+
+
+GameSchema.pre('save', function(next){
+    const emptyBoard = [
+        false, false, false, false, false, false, 
+        false, false, false, false, false, false, 
+        false, false, false, false, false, false, 
+        false, false, false, false, false, false, 
+        false, false, false, false, false, false, 
+    ];
+    this.board = emptyBoard;
+    next();
+})
 
 
 let GameModel = mongoose.model("Game", GameSchema);
